@@ -1,0 +1,5 @@
+*.sql*
+**/settings.py
+*.pyc
+*.sqlite3
+**/migrations/

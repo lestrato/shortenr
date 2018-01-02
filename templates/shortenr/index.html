@@ -1,0 +1,500 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Shortenr - The World's Most Innovative URL Shortener</title>
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Custom fonts for this template -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+  <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/noty/noty.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'vendor/noty/themes/nest.css' %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/datatables.css' %}"/>
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'css/coming-soon.css' %}" rel="stylesheet">
+</head>
+
+<body>
+  <section class="row" id="page1">
+    <div class="overlay"></div>
+    <div class="col-12">
+      <div class="masthead">
+        <div class="masthead-bg">
+          <div id="particles-js" class="h-100"></div>
+        </div>
+        <div class="container h-100">
+          <div class="row h-100">
+            <div class="col-12 my-auto">
+              <div class="masthead-content text-white py-5 py-md-0">
+                <h1 class="mb-3">Shortenr</h1>
+                <p class="mb-5">Get insight into your links with Shortenr, the world's most innovative URL Shortener. You can reach your links' stats <a href="#" data-toggle="modal" data-target="#getStatsModal" style="color: #fff; text-shadow: 1px 1px 1px #000; font-weight: bold">here</a>.</p>
+                <form id="create-url-form" method="POST">{% csrf_token %}
+                  <div class="input-group input-group-newsletter">
+                    <input name="url" type="text" class="form-control" placeholder="Paste a link to shorten it" aria-label="Shorten link..." required>
+                    <span class="input-group-btn">
+                      <button class="btn btn-secondary" type="submit">Shorten Me!</button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="social-icons">
+        <ul class="list-unstyled text-center mb-0">
+          <li class="list-unstyled-item">
+            <a href="https://plus.google.com/101856889440618655308" target="_blank">
+                <i class="fa fa-google-plus"></i>
+              </a>
+          </li>
+          <li class="list-unstyled-item">
+            <a href="https://github.com/lestrato" target="_blank">
+                <i class="fa fa-github"></i>
+              </a>
+          </li>
+          <li class="list-unstyled-item">
+            <a href="https://www.linkedin.com/in/mark-clapa-536802131" target="_blank">
+                <i class="fa fa-linkedin"></i>
+              </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content container">
+        <div class="pt-2">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="text-center pt-3 pt-3">
+          <div class="checkmark-box">
+            <i class="fa fa-check fa-2x"></i>
+          </div>
+        </div>
+        <div class="text-center pt-3 pt-3">
+          <h4 style="color: #333" class="mb-0">Success!</h3>
+          <h4 style="color: #333"><small class="text-muted" style="font-size: 60%">Here's the link we made for you below</small></h4>
+        </div>
+        <div>
+          <div class="input-group col-8 col-sm-6 mx-auto">
+            <input id="new-link-input" type="text" class="form-control" value="" readonly="readonly">
+            <span class="input-group-btn">
+              <button id="copy-new-link-input" class="btn btn-secondary" type="button" data-toggle="popover" data-content="Copied to clipboard!">
+                <i class="fa fa-link fa-fw"></i>
+              </button>
+            </span>
+          </div>
+          <hr>
+        </div>
+        <div class="text-center mb-5">
+          check out the <i class="fa fa-bar-chart fa-fw"></i> for this link <a id="new-stat-link" href="#" target="_blank">here</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal -->
+  <div class="modal fade" id="getStatsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content container">
+        <div class="pt-2">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="text-center pt-3 pt-3">
+          <i class="fa fa-bar-chart fa-3x"></i>
+        </div>
+        <div class="text-center pt-3 pt-3">
+          <h4 style="color: #333" class="mb-0">Fetch your Stats</h3>
+          <h4 style="color: #333"><small class="text-muted" style="font-size: 60%">Enter your Shortenr slug below to retrieve all the analytics related to it</small></h4>
+        </div>
+        <form id="get-stat-form"  action="{% url 'get_url' %}" method="GET">
+          <div class="input-group col-8 col-sm-6 mx-auto">
+            <input name="slug" type="text" class="form-control" required placeholder="98B432F">
+            <span class="input-group-btn">
+              <button class="btn btn-secondary" type="submit">
+                <i class="fa fa-bar-chart fa-fw"></i>
+              </button>
+            </span>
+          </div>
+          <hr>
+        </form>
+        <div class="text-center mb-5">
+          Nevermind, I'm good - <a href="#" data-dismiss="modal">close this window</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if url_object %}
+  <section class="row" id="section-stats">
+    <div class="col-12">
+      <div class="container" style="padding-top: 10%">
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <h2 class="section-heading text-uppercase">Statistics</h2>
+            <h3 class="section-subheading text-muted">for <a href="{{ url_object.rerouted_url }}" target="_blank">{{ url_object.rerouted_url }}</a></h3>
+          </div>
+        </div>
+        <div id="stat-icons" class="row text-center">
+          <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fa fa-circle fa-stack-2x text-primary"></i>
+              <i class="fa fa-chrome fa-stack-1x fa-inverse"></i>
+            </span>
+            <h4 class="service-heading">{{ total_browser_count|length }} Browser{{ total_browser_count|pluralize }} Used</h4>
+            <p class="text-muted">Check out the most popular browsers that your clients are using. We make sure to include even the strangest ones!</p>
+            <button class="btn btn-secondary" data-toggle="modal" data-target="#browsersModal" type="button">Check me out!</button>
+          </div>
+          <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fa fa-circle fa-stack-2x text-primary"></i>
+              <i class="fa fa-laptop fa-stack-1x fa-inverse"></i>
+            </span>
+            <h4 class="service-heading">{{ total_browser_count|length }} Device{{ total_browser_count|pluralize }} Used</h4>
+            <p class="text-muted">Find insight into your demographic's choice in device to better tailor your product to customers of all preference.</p>
+            <button class="btn btn-secondary" data-toggle="modal" data-target="#devicesModal" type="button">Get it here!</button>
+          </div>
+          <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fa fa-circle fa-stack-2x text-primary"></i>
+              <i class="fa fa-globe fa-stack-1x fa-inverse"></i>
+            </span>
+            <h4 class="service-heading">{{ all_stats.count }} Total Click{{ all_stats|pluralize }}</h4>
+            <p class="text-muted">Retrieve and analyze the entire click history for your link here - and we mean all of it. We don't have any more than this.</p>
+            <button class="btn btn-secondary" data-toggle="modal" data-target="#historyModal" type="button">Give it to me!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- Modal -->
+  <div class="modal fade" id="browsersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content container">
+        <div class="pt-2">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="text-center pt-3 pt-3">
+          <i class="fa fa-chrome fa-3x"></i>
+        </div>
+        <div class="text-center pt-3 pt-3">
+          <h4 style="color: #333" class="mb-0">Browser Statistics</h3>
+          {% if all_stats.count == 0 %}
+          <h4 style="color: #333"><small class="text-muted" style="font-size: 60%">We don't have any yet because the link is unused</small></h4>
+          {% else %}
+          <h4 style="color: #333"><small class="text-muted" style="font-size: 60%">Here are the stats we've compiled for you</small></h4>
+          <canvas id="browser-area"></canvas>
+          {% endif %}
+        </div>
+        <div>
+          <hr>
+        </div>
+        <div class="text-center mb-5">
+          I'm done with these stats, <a href="#" data-dismiss="modal">close this window</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="devicesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content container">
+        <div class="pt-2">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="text-center pt-3 pt-3">
+          <i class="fa fa-laptop fa-3x"></i>
+        </div>
+        <div class="text-center pt-3 pt-3">
+          <h4 style="color: #333" class="mb-0">Device Statistics</h3>
+          {% if all_stats.count == 0 %}
+          <h4 style="color: #333"><small class="text-muted" style="font-size: 60%">We don't have any yet because the link is unused</small></h4>
+          {% else %}
+          <h4 style="color: #333"><small class="text-muted" style="font-size: 60%">Here are the stats we've compiled for you</small></h4>
+          <canvas id="device-area"></canvas>
+          {% endif %}
+        </div>
+        <div>
+          <hr>
+        </div>
+        <div class="text-center mb-5">
+          I'm done with these stats, <a href="#" data-dismiss="modal">close this window</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content container">
+        <div class="pt-2">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="text-center pt-3 pt-3">
+          <i class="fa fa-globe fa-3x"></i>
+        </div>
+        <div class="text-center pt-3 pt-3">
+          <h4 style="color: #333" class="mb-0">Entire History</h3>
+          {% if all_stats.count == 0 %}
+          <h4 style="color: #333"><small class="text-muted" style="font-size: 60%">There isn't one because the link is unused</small></h4>
+          {% else %}
+          <h4 style="color: #333"><small class="text-muted" style="font-size: 60%">Below are all recorded visits to the link</small></h4>
+          <hr>
+          <table id="historyTable" class="table table-hover table-bordered table-sm">
+            <thead class="thead-dark">
+              <tr>
+                <th>Device</th>
+                <th>Browser</th>
+                <th>IP Address</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for stat in all_stats %}
+              <tr>
+                <td>{{stat.device}}</td>
+                <td>{{stat.browser}}</td>
+                <td>{{stat.ip_address}}</td>
+                <td>{{stat.viewed_on}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+        </div>
+        <div>
+          <hr>
+        </div>
+        <div class="text-center mb-5">
+          I'm done with the history, <a href="#" data-dismiss="modal">close this window</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <!-- Plugin JavaScript -->
+  <script src="{% static 'vendor/vide/jquery.vide.min.js' %}"></script>
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendor/datatables/datatables.js' %}"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="{% static 'vendor/particles/particles.js' %}"></script>
+  <script src="{% static 'vendor/noty/noty.js' %}" type="text/javascript"></script>
+
+  <script src="{% static 'vendor/chartjs/samples/utils.js' %}"></script>
+  <script src="{% static 'vendor/chartjs/Chart.bundle.js' %}"></script>
+
+  <script src="{% static 'js/coming-soon.js' %}" type="text/javascript"></script>
+  <script type="text/javascript">
+
+  $(document).ready(function() {
+    $('[data-toggle="popover"]').popover();
+
+    {% if slug_found == False %}
+      urlNotFound();
+    {% endif %}
+
+    {% if all_stats.count > 0 %}
+    $('#historyTable').DataTable();
+    $("#historyTable_length").parent().removeClass('col-md-6');
+    $("#historyTable_filter").parent().removeClass('col-md-6');
+    $("#historyTable_info").parent().removeClass('col-md-5');
+    $("#historyTable_paginate").parent().removeClass('col-md-7');
+    historyTable_paginate
+    {% endif %}
+
+    // Vide - Video Background Settings
+    $('body').vide({
+      mp4: "{% static 'mp4/bg.mp4' %}",
+      poster: "{% static 'img/bg-mobile-fallback.png' %}"
+    }, {
+      posterType: 'jpg'
+    });
+
+    /* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
+    particlesJS('particles-js', {{ particle_config | safe }});
+
+    $('body').on('submit', '#create-url-form', function(e) {
+      e.preventDefault();
+      var $form = $(this);
+      $.ajax({
+        type: $form.attr('method'),
+        url: $form.attr('action'),
+        data: $form.serialize(),
+        dataType: 'json',
+        success: function(responseData, textStatus, jqXHR) {
+          if (responseData.message) {
+            errorMessage(responseData.message)
+
+          } else {
+            Noty.closeAll();
+
+            // replace modal elements
+            $('#new-link-input').val(responseData.reroute_url);
+            $('#new-stat-link').attr('href', responseData.stat_url)
+
+            $('#myModal').modal('show');
+          }
+        },
+        error: function(responseData, textStatus, jqXHR) {
+          error500Message();
+        }
+      });
+    });
+
+    $('body').on('submit', '#get-stat-form', function(e) {
+      e.preventDefault();
+      $form = $(this);
+      $.ajax({
+        type: $form.attr('method'),
+        url: $form.attr('action'),
+        data: $form.serialize(),
+        dataType: 'json',
+        success: function(responseData, textStatus, jqXHR) {
+          Noty.closeAll();
+          window.location = '{% url "home" %}' + '?slug='+$form.find('[name="slug"]').val();
+        },
+        error: function(responseData, textStatus, jqXHR) {
+          urlNotFound();
+        }
+      });
+    });
+
+    $('#myModal').on('show.bs.modal', function(e){
+      $(".checkmark-box").addClass('success');
+      $(".checkmark-box > i").addClass('success');
+    })
+
+    $('#myModal').on('hide.bs.modal', function(e){
+      $(".checkmark-box").removeClass('success');
+      $(".checkmark-box > i").removeClass('success');
+    })
+
+    $('body').on('click', '#copy-new-link-input', function(e) {
+      e.preventDefault();
+      $('#new-link-input').select();
+      document.execCommand("copy");
+      $(this).popover('show')
+    })
+
+    $('#copy-new-link-input').popover().click(function () {
+      setTimeout(function () {
+        $('#copy-new-link-input').popover('hide');
+      }, 1500);
+    });
+  })
+
+  </script>
+
+  {% if url_object %}
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+      Chart.defaults.global.defaultFontColor = 'white';
+      Chart.defaults.scale.gridLines.color = 'white';
+      Chart.defaults.global.defaultFontFamily = 'Source Sans Pro';
+      Chart.defaults.global.title.fontSize = 16;
+    });
+
+    $(window).on('load', function() {
+      var color_list = ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#3B3EAC', '#0099C6', '#DD4477', '#66AA00', '#B82E2E', '#316395', '#994499', '#22AA99', '#AAAA11', '#6633CC', '#E67300', '#8B0707', '#329262', '#5574A6', '#3B3EAC'];
+
+      browser_config = {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: {{ browser_family_counts | safe }},
+            backgroundColor: color_list,
+            label: 'Dataset 1'
+          }],
+          labels: {{ browser_families | safe }}
+        },
+        options: {
+          responsive: true,
+          legend: {
+            display: false,
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Client Browsers'
+          },
+          animation: {
+            animateScale: true,
+            animateRotate: true
+          }
+        }
+      };
+
+      device_config = {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: {{ device_family_counts | safe }},
+            backgroundColor: color_list,
+            label: 'Dataset 1'
+          }],
+          labels: {{ device_families | safe }}
+        },
+        options: {
+          responsive: true,
+          legend: {
+            display: false,
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Client Device'
+          },
+          animation: {
+            animateScale: true,
+            animateRotate: true
+          }
+        }
+      };
+
+      {% if all_stats.count > 0 %}
+      var ctx = document.getElementById("browser-area").getContext("2d");
+      window.myDoughnut = new Chart(ctx, browser_config);
+      var ctx = document.getElementById("device-area").getContext("2d");
+      window.myDoughnut = new Chart(ctx, device_config);
+      {% endif %}
+
+      $('html, body').animate({
+          scrollTop: $("#section-stats").offset().top
+      }, 1000, "easeInOutExpo");
+    });
+
+  </script>
+  {% endif %}
+
+</body>
+
+</html>
