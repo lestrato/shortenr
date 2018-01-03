@@ -1,5 +1,4 @@
 *.sql*
 *.pyc
 *.sqlite3
-**/migrations/
 staticfiles/
