@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
-from settings import PRODUCTION_URL
+from shortenr.settings import PRODUCTION_URL
 from shortenr.fields.slug_field import AutoSlugField
 
 
