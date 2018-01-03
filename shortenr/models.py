@@ -36,8 +36,5 @@ class ShortenedUrlStat(models.Model):
 	device = models.CharField(max_length=50, blank=True, null=True)
 	browser = models.CharField(max_length=50, blank=True, null=True)
 	ip_address = models.CharField(max_length=50, blank=True, null=True)
-	latitude = models.CharField(max_length=10, blank=True, null=True)
-	longitude = models.CharField(max_length=10, blank=True, null=True)
-	country = models.CharField(max_length=50, blank=True, null=True)
 
 	viewed_on = models.DateTimeField(auto_now_add=True)

@@ -14,8 +14,6 @@ from datetime import datetime, timedelta
 from shortenr.models import ShortenedUrl, ShortenedUrlStat
 from shortenr.utils import url_exists, get_client_ip
 
-from geoip import geolite2
-
 class LandingPageView(TemplateView):
     '''
     This view handles all invoice transactions except purchasing new seats onto an existing subscription.
@@ -136,14 +134,6 @@ class UrlReroutePageView(View):
             browser=browser_family,
             ip_address=ip_address,
         )
-
-        geo_info = geolite2.lookup(ip_address)
-        if geo_info:
-            if geo_info.country:
-                new_url_stat.country = geo_info.country
-            if geo_info.location:
-                new_url_stat.latitude = geo_info.location[0]
-                new_url_stat.longitude = geo_info.location[1]
 
         new_url_stat.save()
 
